@@ -1,72 +1,71 @@
 import React, { useState } from "react";
 import "./Signin.css";
 import { useNavigate } from "react-router-dom";
+import { Message } from "@mui/icons-material";
 function Signin() {
-  const navigate=useNavigate()
-  const [input, setInput] = useState({ username: "", password: "" });
+  const navigate = useNavigate();
+  const [inputField, setInputField] = useState({ username: "", password: "" });
+  const [error, setError] = useState({});
+  // const [result, setResult] = useState({});
   const handleonchange = (e) => {
-    setInput({ ...input, [e.target.name]: e.target.value });
+    setInputField({ ...inputField, [e.target.name]: e.target.value });
   };
-  // const handlefetch = async () => {
-  //   if (
-  //     input.username !== undefined ||
-  //     input.username !== null ||
-  //     input.username !== ""
-  //   ) {
-  //     if (
-  //       input.username.toString().length !== 6 ||
-  //       input.password.toString().length !== 6
-  //     ) {
-  //       return "username & password not less than 6";
-  //     }
-
-  //     const response = await fetch("http://localhost:5000/api/auth/signin", {
-  //       method: "POST",
-  //       headers: { "content-type": "appliacation/json" },
-  //       body: JSON.stringify(input),
-  //     });
-  //     if (!response) {
-  //       return "user couldnt signup";
-  //     }
-  //     return "registration successfull";
-  //   }
-  //   return "please enter valid field";
-  // };
-  // const result = "";
-  const handlesubmit = async(e) => {
-    console.log("hello");
-    e.preventDefault();
-    const response = await fetch("http://localhost:5000/api/auth/signin", {
-      method: "POST",
-      headers: { "content-type": "appliacation/json" },
-      body: JSON.stringify(input),
-    });
-    if (!response) {
-      return "user couldnt login";
+  const validateFunction = () => {
+    const newError = {};
+    if (
+      typeof inputField.username === "string" ||
+      typeof inputField.username === "object"
+    ) {
+      newError.username = "username not valid";
+    } else if (inputField.password.length < 6) {
+      newError.password = "password too short";
     }
-    navigate("/signup");
-    return "registration successfull";
+    setError(newError);
+    return Object.keys(error).length === 0;
   };
 
+  const handlesubmit = async (e) => {
+    e.preventDefault();
+    if (validateFunction()) {
+      try{
+      const response = await fetch("http://localhost:5000/api/auth/signin", {
+        method: "POST",
+        headers: { "content-type": "appliacation/json" },
+        body: JSON.stringify(inputField),
+      });
+      // const result=await response.data;
+      console.log(response);
+    }
+   
+    catch(error){
+      console.log(error.message);
+    }
+      // setResult(response);
+      // navigate("/signup");
+     
+    }
+  };
 
   return (
     <div className="signup-div">
-     <div className="login-text">Login</div>
+      <span className="success"></span>
+      <div className="login-text">Login</div>
       <form onSubmit={handlesubmit}>
         Username
+        {<span className="error-msg"></span>}
         <input
           type="text"
           name="username"
-          value={input.username}
+          value={inputField.username}
           onChange={handleonchange}
         />
-        Password
+       Password
+        {<span className="error-msg"></span>}
         <input
           type="text"
           name="password"
-          value={input.password}
+          value={inputField.password}
           onChange={handleonchange}
-          maxLength={10}
         />{" "}
         <br />
         <div className="button-div">
