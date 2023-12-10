@@ -55,6 +55,9 @@ button[type="submit"]:hover{
   color: white;
  }
 
+ .error-msg{
+  color: red;
+ }
  @media(max-width:640px){
   .signup-div{
     width: 70%;

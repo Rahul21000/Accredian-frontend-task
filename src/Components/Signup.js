@@ -20,21 +20,19 @@ function Signup() {
   const validateFunction = () => {
     const newError = {};
     if (
-      typeof inputField.username === "string" ||
+      inputField.username.trim() === "" ||
       typeof inputField.username === "object"
     ) {
       setError((newError.username = "username not valid"));
-    } else if (
-      inputField.username.toString().length < 6 ||
-      inputField.password.toString().length < 6
-    ) {
-      newError.username = "username & password not less than 6";
+    } else if (inputField.username.length < 6) {
+      newError.username = "username not less than 6";
     } else if (inputField.password !== inputField.cpassword) {
-      newError.username = "password should be same";
+      newError.username = "password not matched!";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inputField.email)) {
+      newError.email = "valid email required!";
     }
-    // else if(inputField.email!==inputField.email){
-    //   newError.email="password should be same" ;
-    // }
+    setError(newError);
+    return Object.keys(newError).length === 0;
   };
 
   const handlesubmit = async (e) => {
@@ -55,19 +53,27 @@ function Signup() {
       <div className="sign-txt">Signup form</div>
       <span className="success">{result}</span>
       <form onSubmit={handlesubmit}>
-        Username {<span className="error-msg">{result}</span>}
+        <pre>
+          {" "}
+          Username{" "}
+          {error.username && (
+            <span className="error-msg">{error.username}</span>
+          )}
+        </pre>
         <input
           type="text"
           name="username"
           value={inputField.username}
           onChange={handleonchange}
+          required
         />
-        Email {<span className="error-msg">{result}</span>}
+        Email {error.email && <span className="error-msg">{error.email}</span>}
         <input
           type="email"
           name="email"
           value={inputField.email}
           onChange={handleonchange}
+          required
         />{" "}
         Password
         <input
@@ -75,14 +81,16 @@ function Signup() {
           name="password"
           value={inputField.password}
           onChange={handleonchange}
-          placeholder="max length 10"
+          required
         />{" "}
-        Conform Password {<span className="error-msg">{result}</span>}
+        Conform Password{" "}
+        {error.password && <span className="error-msg">{error.password}</span>}
         <input
           type="text"
           name="cpassword"
           value={inputField.cpassword}
           onChange={handleonchange}
+          required
         />{" "}
         <div className="button-div">
           <button type="reset">Reset</button>

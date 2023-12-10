@@ -13,15 +13,16 @@ function Signin() {
   const validateFunction = () => {
     const newError = {};
     if (
-      typeof inputField.username === "string" ||
+      inputField.username.trim() === ""||
       typeof inputField.username === "object"
     ) {
-      newError.username = "username not valid";
-    } else if (inputField.password.length < 6) {
+      newError.username = "valid user required!";
+    }
+     else if ((inputField.password).length < 6) {
       newError.password = "password too short";
     }
     setError(newError);
-    return Object.keys(error).length === 0;
+    return Object.keys(newError).length === 0;
   };
 
   const handlesubmit = async (e) => {
@@ -48,24 +49,26 @@ function Signin() {
 
   return (
     <div className="signup-div">
-      <span className="success"></span>
+      <div className="success"></div>
       <div className="login-text">Login</div>
       <form onSubmit={handlesubmit}>
         Username
-        {<span className="error-msg"></span>}
+        {error.username &&(<span className="error-msg">{error.username}</span>)}
         <input
           type="text"
           name="username"
           value={inputField.username}
           onChange={handleonchange}
+          required
         />
        Password
-        {<span className="error-msg"></span>}
+        {error.password &&(<span className="error-msg">{error.password}</span>)}
         <input
           type="text"
           name="password"
           value={inputField.password}
           onChange={handleonchange}
+          required
         />{" "}
         <br />
         <div className="button-div">
